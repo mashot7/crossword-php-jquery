@@ -36,9 +36,9 @@ body, td { font-family: Courier; font-size: 10pt; }
 	
 	Group: 
 	<select name="groupid">
-	<? foreach ($pc->getGroupIDs() as $groupid): ?>
-	<option value="<?=$groupid?>" <? if ($groupid == $pc->groupid) echo 'selected'; ?>>
-		<?=$groupid?> [w: <?=$pc->countWordsInGroup($groupid);?>]
+	<? foreach ($pc->getGroupIDs() as $groupId): ?>
+	<option value="<?=$groupId?>" <? if ($groupId == $pc->groupId) echo 'selected'; ?>>
+		<?=$groupId?> [w: <?=$pc->countWordsInGroup($groupId);?>]
 	</option>
 	<? endforeach; ?>
 	</select>

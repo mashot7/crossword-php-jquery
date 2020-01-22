@@ -54,7 +54,7 @@ class PHP_Crossword {
 
   var $table = "words";
 
-  var $groupid = "common";
+  var $groupId = "common";
 
   var $db;
 
@@ -85,10 +85,10 @@ class PHP_Crossword {
   /**
    * Set words group ID
    *
-   * @param string $groupid
+   * @param string $groupId
    */
-  function setGroupID($groupid) {
-    $this->groupid = $groupid;
+  function setGroupID($groupId) {
+    $this->groupId = $groupId;
   }
 
   /**
@@ -234,7 +234,7 @@ class PHP_Crossword {
    * @return string $question
    */
   function getQuestion($word) {
-    $sql = "SELECT question FROM {$this->table} WHERE groupid='{$this->groupid}' AND word = '{$word}'";
+    $sql = "SELECT question FROM {$this->table} WHERE groupid='{$this->groupId}' AND word = '{$word}'";
     $row = $this->db->sql_row($sql);
     return $row[0];
   }
@@ -552,7 +552,7 @@ class PHP_Crossword {
     $used_words_sql = $this->__getUsedWordsSql();
 
     $sql = "SELECT word FROM {$this->table} WHERE
-			groupid='{$this->groupid}' AND
+			groupid='{$this->groupId}' AND
             LENGTH(word)<={$len_max} AND
             LENGTH(word)>={$len_min} AND
             word LIKE '{$match}'
@@ -600,7 +600,7 @@ class PHP_Crossword {
     $n = rand(0, $count - 1);
 
     $sql = "SELECT word FROM {$this->table}
-            WHERE groupid='{$this->groupid}' AND {$where}
+            WHERE groupid='{$this->groupId}' AND {$where}
             LIMIT {$n}, 1";
 
     $row = $this->db->sql_row($sql);
@@ -621,7 +621,7 @@ class PHP_Crossword {
     $where_sql = $where ? "AND {$where}" : "";
 
     $sql = "SELECT COUNT(word) FROM {$this->table} 
-			WHERE groupid='{$this->groupid}' {$where_sql}";
+			WHERE groupid='{$this->groupId}' {$where_sql}";
 
     $row = $this->db->sql_row($sql);
     return $row[0];
@@ -636,7 +636,7 @@ class PHP_Crossword {
    */
   function existsWord($word) {
     $sql = "SELECT word FROM {$this->table} WHERE 
-			groupid = '{$this->groupid}' AND
+			groupid = '{$this->groupId}' AND
 			UPPER(word) = UPPER('{$word}')";
     $obj = $this->db->sql_object($sql);
     return $obj->word ? TRUE : FALSE;
@@ -667,7 +667,7 @@ class PHP_Crossword {
     }
 
     $sql = "INSERT INTO {$this->table}(groupid, word, question) 
-			VALUES('{$this->groupid}', UPPER('{$word}'),'{$question}')";
+			VALUES('{$this->groupId}', UPPER('{$word}'),'{$question}')";
 
     $this->db->sql_query($sql);
   }
@@ -742,15 +742,15 @@ class PHP_Crossword {
   /**
    * Get number of words in the group
    *
-   * @param string $groupid
+   * @param string $groupId
    *
    * @return int
    */
-  function countWordsInGroup($groupid = NULL) {
-    if (empty($groupid)) {
-      $groupid = $this->groupid;
+  function countWordsInGroup($groupId = NULL) {
+    if (empty($groupId)) {
+      $groupId = $this->groupId;
     }
-    $sql = "SELECT COUNT(*) FROM {$this->table} WHERE groupid='{$groupid}'";
+    $sql = "SELECT COUNT(*) FROM {$this->table} WHERE groupid='{$groupId}'";
     $row = $this->db->sql_row($sql);
     return (int) $row[0];
   }
@@ -776,12 +776,12 @@ class PHP_Crossword {
   /**
    * Check if the group id already exists in the database
    *
-   * @param string $groupid
+   * @param string $groupId
    *
    * @return boolean
    */
-  function existsGroupID($groupid) {
-    $sql = "SELECT groupid FROM {$this->table} WHERE groupid = '{$groupid}'";
+  function existsGroupID($groupId) {
+    $sql = "SELECT groupid FROM {$this->table} WHERE groupid = '{$groupId}'";
     $row = $this->db->sql_row($sql);
     return !empty($row[0]) ? TRUE : FALSE;
   }
@@ -793,23 +793,23 @@ class PHP_Crossword {
    */
   function createTempGroupID() {
     do {
-      $groupid = rand(100000, 999999);
-    } while ($this->existsGroupID($groupid));
+      $groupId = rand(100000, 999999);
+    } while ($this->existsGroupID($groupId));
 
-    return $groupid;
+    return $groupId;
   }
 
   /**
    * Remove all words from the group
    *
-   * @param string $groupid
+   * @param string $groupId
    */
-  function removeGroup($groupid = NULL) {
-    if (is_null($groupid)) {
-      $groupid = $this->groupid;
+  function removeGroup($groupId = NULL) {
+    if (is_null($groupId)) {
+      $groupId = $this->groupId;
     }
 
-    $sql = "DELETE FROM {$this->table} WHERE groupid='{$groupid}'";
+    $sql = "DELETE FROM {$this->table} WHERE groupid='{$groupId}'";
 
     $this->db->sql_query($sql);
 
@@ -827,14 +827,14 @@ class PHP_Crossword {
    */
   function generateFromWords($words_list) {
     // save current settings
-    $_tmp_groupid = $this->groupid;
+    $_tmp_groupid = $this->groupId;
     $_max_words = $this->max_words;
 
     // create temporary group
-    $groupid = $this->createTempGroupID();
+    $groupId = $this->createTempGroupID();
 
     // set temp group as current group
-    $this->setGroupID($groupid);
+    $this->setGroupID($groupId);
 
     // split words list and  insert into temp group
     foreach (explode("\n", $words_list) as $line) {
@@ -864,7 +864,7 @@ class PHP_Crossword {
     }
 
     // remove temporary group
-    $this->removeGroup($groupid);
+    $this->removeGroup($groupId);
 
     // restore previous settings
     $this->setGroupID($_tmp_groupid);

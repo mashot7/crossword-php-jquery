@@ -12,9 +12,9 @@ body, td { font-family: Courier; font-size: 10pt; }
 <?php
 require 'init.php';
 
-$groupid = 'demo';
+$groupId = 'demo';
 
-$pc->setGroupID($groupid);
+$pc->setGroupID($groupId);
 
 switch ($_REQUEST['act'])
 {
@@ -27,7 +27,7 @@ switch ($_REQUEST['act'])
 <table align="center">
 <tr>
 	<td>Group ID:</td>
-	<td><b><?=$pc->groupid?></b></td>
+	<td><b><?=$pc->groupId?></b></td>
 </tr>
 <tr>
 	<td>Words in group:</td>

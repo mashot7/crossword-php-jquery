@@ -43,7 +43,7 @@ class PHPCrosswordClient {
 
   var $max_tries = 10;
 
-  var $groupid = 'en';
+  var $groupId = 'en';
 
   var $html;
 
@@ -71,10 +71,10 @@ class PHPCrosswordClient {
   /**
    * Set words group ID
    *
-   * @param string $groupid
+   * @param string $groupId
    */
-  function setGroupID($groupid) {
-    $this->groupid = $groupid;
+  function setGroupID($groupId) {
+    $this->groupId = $groupId;
   }
 
   /**
@@ -229,7 +229,7 @@ class PHPCrosswordClient {
     $url .= '&rows=' . $this->rows;
     $url .= '&max_words=' . $this->words;
     $url .= '&max_tries=' . $this->max_tries;
-    $url .= '&groupid=' . $this->groupid;
+    $url .= '&groupid=' . $this->groupId;
 
     require_once dirname(__FILE__) . '/Snoopy.class.php';
 
@@ -252,7 +252,7 @@ class PHPCrosswordClient {
 
     $pc = new PHP_Crossword($this->cols, $this->rows);
 
-    $pc->setGroupID($this->groupid);
+    $pc->setGroupID($this->groupId);
     $pc->setMaxWords($this->words);
     $pc->setMaxFullTries($this->max_tries);
 

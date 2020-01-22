@@ -12,6 +12,12 @@
 
 <?php
 require 'init.php';
+$_REQUEST['words'] = 'Microsoft
+Windows
+Office
+Exel
+World
+Google';
 ?>
 
 <div align="center">
@@ -27,6 +33,7 @@ require 'init.php';
   <?php if (!empty($_REQUEST['words'])): ?>
 
     <?php
+  var_dump($_REQUEST['words']);
     $success = $pc->generateFromWords($_REQUEST['words']);
     ?>
 
@@ -39,6 +46,7 @@ require 'init.php';
       <?php
       $html = $pc->getHTML($_REQUEST['colors']);
       $words = $pc->getWords();
+      var_dump($words);
       ?>
 
 			<p><?= $html ?></p>

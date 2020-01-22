@@ -1,38 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=<?= $charset ?>">
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>PHP Crossword Generator</title>
-	<style>
-		body, td {
-			font-family: Courier;
-			font-size: 10pt;
-		}
-
-		.crossTable {
-			border-spacing: 0px;
-			border-collapse: collapse;
-		}
-
-		.cellEmpty {
-			padding: 0px;
-		}
-
-		.cellLetter {
-			padding: 1px;
-			background-color: #EEEEEE;
-			border: 1px solid #000000;
-			width: 20px;
-			height: 20px;
-		}
-
-		.cellDebug {
-			padding: 1px;
-			border: 1px solid #000000;
-			width: 20px;
-			height: 20px;
-		}
-	</style>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -45,7 +19,7 @@ require 'init.php';
 	<form method="post">
 		Add some words: <br/>
 		<textarea name="words" cols="30"
-		          rows="10"><?= htmlspecialchars(stripslashes($_REQUEST['words'])) ?></textarea>
+		          rows="10"></textarea>
 		<br/><br/>
 		<input type="submit" value="Generate"/>
 	</form>

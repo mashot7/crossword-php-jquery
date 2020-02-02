@@ -25,7 +25,7 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version    0.2
  */
-class PHP_Crossword_Grid {
+class CrosswordGrid {
 
 	var $rows;
 
@@ -62,7 +62,7 @@ class PHP_Crossword_Grid {
 	function __initCells() {
 		for ($y = 0; $y < $this->rows; $y++) {
 			for ($x = 0; $x < $this->cols; $x++) {
-				$this->cells[$x][$y] = new PHP_Crossword_Cell($x, $y);
+				$this->cells[$x][$y] = new CrosswordCell($x, $y);
 			}
 		}
 	}
@@ -111,7 +111,7 @@ class PHP_Crossword_Grid {
 	 * @param int $axis
 	 */
 	function placeWord($word, $x, $y, $axis) {
-		$w = new PHP_Crossword_Word($word, $axis, $this->cells[$x][$y]);
+		$w = new CrosswordWord($word, $axis, $this->cells[$x][$y]);
 
 		++$this->inum; // sandy addition
 		++$this->maxinum; // sandy addition
@@ -336,84 +336,84 @@ class PHP_Crossword_Grid {
 	 *
 	 * @return string HTML
 	 */
-	function getHTML($params = []) {
-		extract((array) $params);
-
-		$html = "<table border=0 class='crossTable' align='center'>";
-
-		for ($y = -1; $y < $this->rows; $y++) {
-			$html .= "<tr align='center'>";
-
-			for ($x = -1; $x < $this->cols; $x++) {
-				if ($x > -1 && $y > -1) {
-					switch ($this->cells[$x][$y]->getCanCrossAxis()) {
-						case PC_AXIS_H:
-							$color = "yellow";
-							break;
-
-						case PC_AXIS_V:
-							$color = "brown";
-							break;
-
-						case PC_AXIS_NONE:
-							$color = "red";
-							break;
-
-						case PC_AXIS_BOTH:
-							$color = "lightgreen";
-							break;
-					}
-				}
-
-				$class = isset($this->cells[$x][$y]->letter) ? 'cellLetter' : 'cellEmpty';
-
-				if (!$colors) {
-					$color = "white";
-				}
-				else {
-					$class = 'cellDebug';
-				}
-
-				$html .= "\n";
-
-				if (isset($this->cells[$x][$y]->number)) {
-					//global $maxinum, $totwords, $wc, $fillflag, $cellflag; # sandy addition
-					$tempinum = $this->cells[$x][$y]->number; # sandy addition
-					//$tempinum = $tempinum + 10 - $maxinum - $wc;
-					//dump($tempinum);
-					//$tempinum = $tempinum + 10 - $this->maxinum - $this->totwords;
-
-					$html .= "<td class='cellNumber$cellflag' align=right valign=bottom><b>$tempinum</b></td>"; # sandy addition
-				}
-				elseif ($y == -1) #                    $html.= "<td width='20' class='cellDebug'><b>".($x+1)."</b></td>";
-				{
-					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
-				}
-				elseif ($x == -1) #                    $html.= "<td class='cellDebug'><b>".($y+1)."</b></td>";
-				{
-					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
-				}
-				elseif (isset($this->cells[$x][$y]->letter)) {
-					if ($fillflag) {
-						$letter = $this->cells[$x][$y]->letter;
-					}
-					else {
-						$letter = "&nbsp;";
-					}
-					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>$letter</td>";
-					#                    $html.= "<td bgcolor='{$color}' class='{$class}'>".$this->cells[$x][$y]->letter."</td>";
-				}
-				else {
-					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
-				}
-			}
-			$html .= "</tr>";
-		}
-
-		$html .= "</table>";
-
-		return $html;
-	}
+//	function getHTML($params = []) {
+//		extract((array) $params);
+//
+//		$html = "<table border=0 class='crossTable' align='center'>";
+//
+//		for ($y = -1; $y < $this->rows; $y++) {
+//			$html .= "<tr align='center'>";
+//
+//			for ($x = -1; $x < $this->cols; $x++) {
+//				if ($x > -1 && $y > -1) {
+//					switch ($this->cells[$x][$y]->getCanCrossAxis()) {
+//						case PC_AXIS_H:
+//							$color = "yellow";
+//							break;
+//
+//						case PC_AXIS_V:
+//							$color = "brown";
+//							break;
+//
+//						case PC_AXIS_NONE:
+//							$color = "red";
+//							break;
+//
+//						case PC_AXIS_BOTH:
+//							$color = "lightgreen";
+//							break;
+//					}
+//				}
+//
+//				$class = isset($this->cells[$x][$y]->letter) ? 'cellLetter' : 'cellEmpty';
+//
+//				if (!$colors) {
+//					$color = "white";
+//				}
+//				else {
+//					$class = 'cellDebug';
+//				}
+//
+//				$html .= "\n";
+//
+//				if (isset($this->cells[$x][$y]->number)) {
+//					//global $maxinum, $totwords, $wc, $fillflag, $cellflag; # sandy addition
+//					$tempinum = $this->cells[$x][$y]->number; # sandy addition
+//					//$tempinum = $tempinum + 10 - $maxinum - $wc;
+//					//dump($tempinum);
+//					//$tempinum = $tempinum + 10 - $this->maxinum - $this->totwords;
+//
+//					$html .= "<td class='cellNumber$cellflag' align=right valign=bottom><b>$tempinum</b></td>"; # sandy addition
+//				}
+//				elseif ($y == -1) #                    $html.= "<td width='20' class='cellDebug'><b>".($x+1)."</b></td>";
+//				{
+//					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
+//				}
+//				elseif ($x == -1) #                    $html.= "<td class='cellDebug'><b>".($y+1)."</b></td>";
+//				{
+//					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
+//				}
+//				elseif (isset($this->cells[$x][$y]->letter)) {
+//					if ($fillflag) {
+//						$letter = $this->cells[$x][$y]->letter;
+//					}
+//					else {
+//						$letter = "&nbsp;";
+//					}
+//					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>$letter</td>";
+//					#                    $html.= "<td bgcolor='{$color}' class='{$class}'>".$this->cells[$x][$y]->letter."</td>";
+//				}
+//				else {
+//					$html .= "<td bgcolor='{$color}' class='{$class}$cellflag'>&nbsp;</td>";
+//				}
+//			}
+//			$html .= "</tr>";
+//		}
+//
+//		$html .= "</table>";
+//
+//		return $html;
+//	}
 
 }
 

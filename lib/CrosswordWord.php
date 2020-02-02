@@ -25,7 +25,7 @@
  * @license    http://opensource.org/licenses/gpl-license.php GNU Public License
  * @version    0.2
  */
-class PHP_Crossword_Word {
+class CrosswordWord {
 
   var $word;
 

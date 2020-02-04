@@ -43,24 +43,18 @@ if (!empty($words)) {
 			(function ($) {
 				$(function () {
 					let puzzleData = [];
-
 					arr.map(function (item, index) {
-						console.log(index, item);
 						puzzleData.push({
 							clue: 'Clue: ' + item.word,
 							answer: item.word,
 							position: index + 1,
-							orientation: item.axis == '1' ? 'across' : 'down',
+							orientation: item.axis === 1 ? 'across' : 'down',
 							startx: item.x,
 							starty: item.y
 						})
-
 					});
-
 					$('#puzzle-wrapper').crossword(puzzleData);
-
 				})
-
 			})(jQuery)
 
 		</script>

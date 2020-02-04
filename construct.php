@@ -1,24 +1,24 @@
 <?php
 $words = [
-	'Space',
-	'Moon',
-	'Unbelievable',
-	'Table',
-	'Bottle',
-	'Signature',
-	'Washington',
-	'Germany',
-	'Google',
-	'Washing',
-	'Winston',
-	'Tesla',
-	'Rammstein',
-	'Trump',
-	'Wilmington',
-	'Village',
-	'Angel',
-	'Arrive',
-	'Mirage',
+  'Space',
+  'Moon',
+  'Unbelievable',
+  'Table',
+  'Bottle',
+  'Signature',
+  'Washington',
+  'Germany',
+  'Google',
+  'Washing',
+  'Winston',
+  'Tesla',
+  'Rammstein',
+  'Trump',
+  'Wilmington',
+  'Village',
+  'Angel',
+  'Arrive',
+  'Mirage',
 ];
 $count = count($words);
 foreach ($words as &$word) {
@@ -35,8 +35,8 @@ if (!empty($words)) {
   }
   else {
     $words = $pc->getWords();
-   ?>
-	  <div id="puzzle-wrapper"></div>
+    ?>
+		<div id="puzzle-wrapper"></div>
 		<script>
 			let arr = <?= json_encode($words) ?>;
 
@@ -47,12 +47,12 @@ if (!empty($words)) {
 					arr.map(function (item, index) {
 						console.log(index, item);
 						puzzleData.push({
-						clue: 'Clue: ' + item.word,
-						answer: item.word,
-						position: index + 1,
-						orientation: item.axis == '1' ? 'across' : 'down',
-						startx: item.x,
-						starty: item.y
+							clue: 'Clue: ' + item.word,
+							answer: item.word,
+							position: index + 1,
+							orientation: item.axis == '1' ? 'across' : 'down',
+							startx: item.x,
+							starty: item.y
 						})
 
 					});
@@ -66,11 +66,5 @@ if (!empty($words)) {
 
 		</script>
     <?php
-    echo '<prev>';
-//    echo json_encode($words);
-
-        var_dump(count($words));
-        var_dump($count);
-    echo '</prev>';
   }
 }

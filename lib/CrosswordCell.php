@@ -103,7 +103,7 @@ class CrosswordCell {
 
     $n += 2;
 
-    if (is_object($grid->cells[$x][$y])) {
+    if (isset($grid->cells[$x][$y]) && is_object($grid->cells[$x][$y])) {
       $grid->cells[$x][$y]->setCanCross($axis, FALSE);
     }
 

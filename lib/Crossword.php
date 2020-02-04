@@ -224,7 +224,7 @@ class Crossword {
 
       // dump( "Words: " . $this->grid->countWords() . ", Tries: $this->_tries" );
 
-      $w =& $this->grid->getRandomWord();
+      $w = $this->grid->getRandomWord();
 
       if (is_numeric($w) && $w == PC_WORDS_FULLY_CROSSED) {
         // echo "NOTE: All words fully crossed...";
@@ -285,7 +285,7 @@ class Crossword {
       $s_cell = &$this->__calcStartCell($cell, $start, $end, $axis, $word, $pos);
       $can = $this->grid->canPlaceWord($word, $s_cell->x, $s_cell->y, $axis);
 
-      } while (!$can);
+    } while (!$can);
 
     return [$word, &$s_cell];
   }
@@ -301,6 +301,7 @@ class Crossword {
    * @param int $axis
    * @param string $word
    * @param int $pos last position
+   *
    * @return object|FALSE starting cell object or FALSE ir can't find
    *
    * @return bool
@@ -364,7 +365,7 @@ class Crossword {
       $arrayFilter->removeFromArray($matches, $used_word);
     }
 
-    return $this->__pickWord( $regexp, $matches);
+    return $this->__pickWord($regexp, $matches);
   }
 
   /**
@@ -374,6 +375,7 @@ class Crossword {
    *
    * @param string $regexp Regexp to match
    * @param array $matches
+   *
    * @return string|NULL word or NULL if couldn't find
    */
   function __pickWord($regexp, &$matches) {

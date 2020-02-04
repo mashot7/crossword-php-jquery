@@ -35,15 +35,11 @@ if (!empty($words)) {
   }
   else {
     $words = $pc->getWords();
-    echo json_encode($words);
    ?>
 	  <div id="puzzle-wrapper"></div>
 		<script>
 			let arr = <?= json_encode($words) ?>;
-			document.write('a');
-			document.body.innerHTML = '<div id="puzzle-wrapper"></div>';
-			console.log(arr);
-			// A javascript-enhanced crossword puzzle [c] Jesse Weisbeck, MIT/GPL
+
 			(function ($) {
 				$(function () {
 					let puzzleData = [];

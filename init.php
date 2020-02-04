@@ -1,6 +1,5 @@
 <?php
 
-require 'config.php';
 require 'lib/Crossword.php';
 require 'lib/ArrayFilter.php';
 

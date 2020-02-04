@@ -1,30 +1,26 @@
 <?php
 $words = [
-  'Microsoft',
-  'Windows',
-  'Office',
-  'Excel',
-  'World',
-  'Google',
-  'Galaxy',
-  'Several',
-  'House',
-  'Honey',
-	'Hello',
-	'Yesterday'
-];
-$words = [
 	'Space',
 	'Moon',
 	'Unbelievable',
 	'Table',
 	'Bottle',
-	'Coke',
-	'Bye',
 	'Signature',
-	'Drugs',
-	'Drugs',
+	'Washington',
+	'Germany',
+	'Google',
+	'Washing',
+	'Winston',
+	'Tesla',
+	'Rammstein',
+	'Trump',
+	'Wilmington',
+	'Village',
+	'Angel',
+	'Arrive',
+	'Mirage',
 ];
+$count = count($words);
 foreach ($words as &$word) {
   $word = strtoupper($word);
 }
@@ -32,7 +28,7 @@ require 'init.php';
 
 if (!empty($words)) {
 
-  $success = $pc->generateFromWords();//$words
+  $success = $pc->generateFromWords();
   if (!$success) {
 
     echo 'SORRY, UNABLE TO GENERATE CROSSWORD FROM YOUR WORDS';
@@ -75,9 +71,10 @@ if (!empty($words)) {
 		</script>
     <?php
     echo '<prev>';
-    echo json_encode($words);
+//    echo json_encode($words);
 
-    //    var_dump($words);
+        var_dump(count($words));
+        var_dump($count);
     echo '</prev>';
   }
 }

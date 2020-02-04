@@ -154,7 +154,7 @@ class CrosswordGrid {
 
 		// disable cell after last cell
 		$c = $s + strlen($word);
-		if (is_object($this->cells[$cx][$cy])) {
+		if (isset($this->cells[$cx][$cy]) && is_object($this->cells[$cx][$cy])) {
 			$this->cells[$cx][$cy]->setCanCross(PC_AXIS_BOTH, FALSE);
 		}
 

@@ -86,18 +86,6 @@ class Crossword {
     $this->rows = (int) $rows;
     $this->cols = (int) $cols;
     $this->_words = $words;
-
-    // connect to the database
-    $this->db = new MySQL;
-  }
-
-  /**
-   * Set words group ID
-   *
-   * @param string $groupId
-   */
-  function setGroupID($groupId) {
-    $this->groupId = $groupId;
   }
 
   /**
@@ -191,17 +179,6 @@ class Crossword {
     $this->_items = NULL;
   }
 
-  //  /**
-  //   * Get crossword HTML (useful for generator debugging)
-  //   *
-  //   * @param array params
-  //   *
-  //   * @return string HTML
-  //   */
-  //  function getHTML($params = []) {
-  //    return $this->grid->getHTML($params);
-  //  }
-
   /**
    * Get crossword items
    *
@@ -235,19 +212,6 @@ class Crossword {
     return $items;
   }
 
-  //  /**
-  //   * Get question for the word
-  //   *
-  //   * @param string $word
-  //   *
-  //   * @return string $question
-  //   */
-  //  function getQuestion($word) {
-  //    $sql = "SELECT question FROM {$this->table} WHERE groupid='{$this->groupId}' AND word = '{$word}'";
-  //    $row = $this->db->sql_row($sql);
-  //    return $row[0];
-  //  }
-
   /**
    * Try to generate crossword automatically
    * (until we get enough word or reach number of maximum tries
@@ -262,7 +226,7 @@ class Crossword {
 
       $w =& $this->grid->getRandomWord();
 
-      if ($w == PC_WORDS_FULLY_CROSSED) {
+      if (is_numeric($w) && $w == PC_WORDS_FULLY_CROSSED) {
         // echo "NOTE: All words fully crossed...";
         break;
       }
@@ -279,7 +243,7 @@ class Crossword {
         //dump( "TRYING CELL: [$cell->x/$cell->y]:". $cell->letter );
         //dump( "COUNT CELLS: ". count($cells) );
 
-        $list =& $this->__getWordWithStart($cell, $axis);
+        $list = $this->__getWordWithStart($cell, $axis);
         $word = $list[0];
         $start =& $list[1];
 
@@ -318,14 +282,10 @@ class Crossword {
     $pos = NULL;
 
     do {
-      // dump( $this->_match_line );
       $s_cell = &$this->__calcStartCell($cell, $start, $end, $axis, $word, $pos);
       $can = $this->grid->canPlaceWord($word, $s_cell->x, $s_cell->y, $axis);
 
-      //if ( !$can )
-      // dump(strtoupper("Wrong start position [{$s_cell->x}x{$s_cell->y}]! Relocating..."));
-
-    } while (!$can);
+      } while (!$can);
 
     return [$word, &$s_cell];
   }
@@ -341,7 +301,7 @@ class Crossword {
    * @param int $axis
    * @param string $word
    * @param int $pos last position
-   * return object|FALSE starting cell object or FALSE ir can't find
+   * @return object|FALSE starting cell object or FALSE ir can't find
    *
    * @return bool
    */
@@ -389,7 +349,6 @@ class Crossword {
    */
   function __getWord(&$cell, &$start, &$end, $axis) {
     $this->_match_line = $this->__getMatchLine($cell, $start, $end, $axis);
-    $match = $this->__getMatchLike($this->_match_line);
     $min = $this->__getMatchMin($this->_match_line);
     $max = strlen($this->_match_line);
     $regexp = $this->__getMatchRegexp($this->_match_line);
@@ -400,13 +359,12 @@ class Crossword {
     $subject = $arrayFilter->doFilter($subject, '>=', $min);
     $matches = preg_grep('/' . $regexp . '/', $subject);
 
-
-    $rs = $this->__loadWords($match, $min, $max);
+    $this->_used_words = $this->__getUsedWordsArray();
     foreach ($this->_used_words as $used_word) {
       $arrayFilter->removeFromArray($matches, $used_word);
     }
 
-    return $this->__pickWord($rs, $regexp, $matches);
+    return $this->__pickWord( $regexp, $matches);
   }
 
   /**
@@ -414,14 +372,11 @@ class Crossword {
    *
    * @private
    *
-   * @param mysqli_result $rs
    * @param string $regexp Regexp to match
    * @param array $matches
-   * return string|NULL word or NULL if couldn't find
-   *
-   * @return mixed|null
+   * @return string|NULL word or NULL if couldn't find
    */
-  function __pickWord(&$rs, $regexp, &$matches) {
+  function __pickWord($regexp, &$matches) {
 
     $n = count($matches);
     if (!$n) {
@@ -503,25 +458,6 @@ class Crossword {
   }
 
   /**
-   * Get SQL LIKE match for the match string
-   *
-   * @private
-   *
-   * @param string $str match string
-   *
-   * @return string
-   */
-  function __getMatchLike($str) {
-    $str = preg_replace_callback("/^_+/", function () {
-      return "%";
-    }, $str, 1);
-    $str = preg_replace_callback("/_+$/", function () {
-      return "%";
-    }, $str, 1);
-    return $str;
-  }
-
-  /**
    * Get REGEXP for the match string
    *
    * @private
@@ -558,50 +494,18 @@ class Crossword {
   }
 
   /**
-   * Load words for the match
+   * Get used word array
    *
    * @private
-   *
-   * @param string $match SQL LIKE match
-   * @param int $len_min minimum length of the word
-   * @param int $len_max maximum length of the word
-   *
-   * @return bool|\mysqli_result
+   * @return array words
    */
-  function __loadWords($match, $len_min, $len_max) {
-    $used_words_sql = $this->__getUsedWordsSql()['sql'];
-    $this->_used_words = $this->__getUsedWordsSql()['array'];
-
-    $sql = "SELECT word FROM {$this->table} WHERE
-			groupid='{$this->groupId}' AND
-            LENGTH(word)<={$len_max} AND
-            LENGTH(word)>={$len_min} AND
-            word LIKE '{$match}'
-            {$used_words_sql}
-            ";
-
-    // dump($sql);
-    return $this->db->sql_result($sql);
-  }
-
-  /**
-   * Get used word SQL
-   *
-   * @private
-   * return string
-   */
-  function __getUsedWordsSql() {
-    $sql = '';
+  function __getUsedWordsArray() {
     $words = [];
     for ($i = 0; $i < count($this->grid->words); $i++) {
-      $sql .= "AND word!='" . $this->grid->words[$i]->word . "' ";
       $words[] = $this->grid->words[$i]->word;
     }
-    //    var_dump('used_words', $this->_used_words);
-    //    var_dump('used_words', $sql);
-    //    die();
 
-    return ['sql' => $sql, 'array' => $words];
+    return $words;
   }
 
   /**
@@ -618,54 +522,12 @@ class Crossword {
     $row = $filter->doFilter($this->_words, '<=', $max_length);
     $count = count($row);
     $n = rand(0, $count - 1);
-    // old
-    //    $where = "LENGTH(word)<={$max_length}";
-    //    $sql = "SELECT word FROM {$this->table}
-    //      WHERE groupid='{$this->groupId}' AND {$where}
-    //            LIMIT {$n}, 1";
-    //    $row = $this->db->sql_row($sql);
 
     if (!$count) {
       die("ERROR: there is no words to fit in this grid");
     }
-    //    var_dump('find');
     $this->_currentWord = $row[$n];
-    var_dump($row[$n]);
     return $row[$n];
-  }
-
-  /**
-   * Count words
-   *
-   * @private
-   *
-   * @param string $where SQL where
-   *
-   * @return int
-   */
-  function __getWordsCount($where = NULL) {
-    $where_sql = $where ? "AND {$where}" : "";
-
-    $sql = "SELECT COUNT(word) FROM {$this->table} 
-			WHERE groupid='{$this->groupId}' {$where_sql}";
-
-    $row = $this->db->sql_row($sql);
-    return $row[0];
-  }
-
-  /**
-   * Check if the word already exists in the database
-   *
-   * @param string $word
-   *
-   * @return boolean
-   */
-  function existsWord($word) {
-    $sql = "SELECT word FROM {$this->table} WHERE 
-			groupid = '{$this->groupId}' AND
-			UPPER(word) = UPPER('{$word}')";
-    $obj = $this->db->sql_object($sql);
-    return $obj->word ? TRUE : FALSE;
   }
 
   function preg_callback($arg) {
@@ -673,136 +535,13 @@ class Crossword {
   }
 
   /**
-   * Insert word into database
-   *
-   * @param string $word
-   * @param string $question
-   *
-   * @return bool
-   */
-  function insertWord($word, $question) {
-    $word = trim($word);
-    $word = preg_replace_callback("/[\_\'\"\%\*\+\\\\\/\[\]\(\)\.\{\}\$\^\,\<\>\;\:\=\?\#\-]/", function () {
-      return '';
-    }, $word);
-    if (empty($word)) {
-      return FALSE;
-    }
-    if ($this->existsWord($word)) {
-      return FALSE;
-    }
-
-    $sql = "INSERT INTO {$this->table}(groupid, word, question) 
-			VALUES('{$this->groupId}', UPPER('{$word}'),'{$question}')";
-
-    $this->db->sql_query($sql);
-  }
-
-
-  /**
-   * Get number of words in the group
-   *
-   * @param string $groupId
-   *
-   * @return int
-   */
-  function countWordsInGroup($groupId = NULL) {
-    if (empty($groupId)) {
-      $groupId = $this->groupId;
-    }
-    $sql = "SELECT COUNT(*) FROM {$this->table} WHERE groupid='{$groupId}'";
-    $row = $this->db->sql_row($sql);
-    return (int) $row[0];
-  }
-
-  /**
-   * Get list of available words' group ids
-   *
-   * @return array
-   */
-  function getGroupIDs() {
-    $sql = "SELECT groupid FROM {$this->table} GROUP BY groupid ORDER BY groupid";
-    $list = $this->db->sql_all_rows($sql);
-
-    $ids = [];
-
-    for ($i = 0; $i < count($list); $i++) {
-      $ids[] = $list[$i][0];
-    }
-
-    return $ids;
-  }
-
-  /**
-   * Check if the group id already exists in the database
-   *
-   * @param string $groupId
-   *
-   * @return boolean
-   */
-  function existsGroupID($groupId) {
-    $sql = "SELECT groupid FROM {$this->table} WHERE groupid = '{$groupId}'";
-    $row = $this->db->sql_row($sql);
-    return !empty($row[0]) ? TRUE : FALSE;
-  }
-
-  /**
-   * Generate temporary group id
-   *
-   * @return string group id
-   */
-  function createTempGroupID() {
-    do {
-      $groupId = rand(100000, 999999);
-    } while ($this->existsGroupID($groupId));
-
-    return $groupId;
-  }
-
-  /**
-   * Remove all words from the group
-   *
-   * @param string $groupId
-   */
-  function removeGroup($groupId = NULL) {
-    if (is_null($groupId)) {
-      $groupId = $this->groupId;
-    }
-
-    $sql = "DELETE FROM {$this->table} WHERE groupid='{$groupId}'";
-
-    $this->db->sql_query($sql);
-
-    $sql = "OPTIMIZE TABLE {$this->table}";
-
-    $this->db->sql_query($sql);
-  }
-
-  /**
    * Generate crossword from provided words list
-   *
-   * //   * @param string $words_list
    *
    * @return boolean TRUE on success
    */
-  function generateFromWords() {//$words_list
+  function generateFromWords() {
     // save current settings
-    //    $_tmp_groupid = $this->groupId;
     $_max_words = $this->max_words;
-
-    // create temporary group
-    //    $groupId = $this->createTempGroupID();
-
-    // set temp group as current group
-    //    $this->setGroupID($groupId);
-
-    // split words list and  insert into temp group
-
-    //    foreach (explode("\n", ) as $line) {
-    foreach ($this->_words as $word) {
-      $this->insertWord($word, '');
-    }
-    //    }
 
     // try to generate crossword from all passed words
     $required_words = count($this->_words);
@@ -823,13 +562,6 @@ class Crossword {
 
       $required_words--;
     }
-
-    // remove temporary group
-    //    $this->removeGroup($groupId);
-    //
-    //    // restore previous settings
-    //    $this->setGroupID($_tmp_groupid);
-    //    $this->setMaxWords($_max_words);
 
     return $success;
   }

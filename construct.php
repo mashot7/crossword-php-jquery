@@ -56,7 +56,6 @@ if (!empty($words)) {
 						})
 
 					});
-					console.log(puzzleData);
 
 					$('#puzzle-wrapper').crossword(puzzleData);
 

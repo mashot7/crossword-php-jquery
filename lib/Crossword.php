@@ -75,6 +75,8 @@ class Crossword {
 
   private $_used_words = [];
 
+  private $_questions = [];
+
   /**
    * Constructor
    *
@@ -85,7 +87,10 @@ class Crossword {
   function __construct($rows = 15, $cols = 15, $words = []) {
     $this->rows = (int) $rows;
     $this->cols = (int) $cols;
-    $this->_words = $words;
+    foreach ($words as $word) {
+      $this->_words[] = $word['word'];
+      $this->_questions[$word['word']] = $word['question'];
+    }
   }
 
   /**
@@ -202,7 +207,7 @@ class Crossword {
 
       $items[] = [
         "word" => $w->word,
-        //        "question" => $this->getQuestion($w->word),
+        "question" => $this->_questions[$w->word],
         "x" => $w->getStartX() + 1,
         "y" => $w->getStartY() + 1,
         "axis" => $w->axis,
@@ -566,6 +571,10 @@ class Crossword {
     }
 
     return $success;
+  }
+
+  private function getQuestion($word) {
+    $this->_questions;
   }
 
 }
